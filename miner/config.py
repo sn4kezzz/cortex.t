@@ -12,41 +12,43 @@ class Config:
     def __init__(self):
         super().__init__()
 
-        self.ENV = os.getenv('ENV')
+        self.ENV = os.getenv("ENV")
 
-        self.WANDB_API_KEY = os.getenv('WANDB_API_KEY')
-        self.OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-        self.GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-        self.ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
-        self.GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-        self.AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
-        self.AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
-        self.PIXABAY_API_KEY = os.getenv('PIXABAY_API_KEY')
+        self.WANDB_API_KEY = os.getenv("WANDB_API_KEY")
+        self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+        self.GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+        self.ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+        self.GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+        self.AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
+        self.AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
+        self.PIXABAY_API_KEY = os.getenv("PIXABAY_API_KEY")
 
         self.CORTEXT_MINER_ADDITIONAL_WHITELIST_VALIDATOR_KEYS = os.getenv(
-            'CORTEXT_MINER_ADDITIONAL_WHITELIST_VALIDATOR_KEYS')
-        self.RICH_TRACEBACK = os.getenv('RICH_TRACEBACK')
+            "CORTEXT_MINER_ADDITIONAL_WHITELIST_VALIDATOR_KEYS"
+        )
+        self.RICH_TRACEBACK = os.getenv("RICH_TRACEBACK")
 
-        self.WALLET_NAME = os.getenv('WALLET_NAME')
-        self.HOT_KEY = os.getenv('HOT_KEY')
-        self.NET_UID = int(os.getenv('NET_UID', 18))
-        self.ASYNC_TIME_OUT = int(os.getenv('ASYNC_TIME_OUT', 60))
-        self.AXON_PORT = int(os.getenv('AXON_PORT', 8098))
-        self.EXTERNAL_IP = os.getenv('EXTERNAL_IP')
+        self.WALLET_NAME = os.getenv("WALLET_NAME")
+        self.HOT_KEY = os.getenv("HOT_KEY")
+        self.NET_UID = int(os.getenv("NET_UID", 18))
+        self.ASYNC_TIME_OUT = int(os.getenv("ASYNC_TIME_OUT", 60))
+        self.AXON_PORT = int(os.getenv("AXON_PORT", 8098))
+        self.EXTERNAL_IP = os.getenv("EXTERNAL_IP")
 
-        self.BT_SUBTENSOR_NETWORK = 'test' if self.ENV == 'test' else 'finney'
-        self.WANDB_OFF = False if self.ENV == 'prod' else True
-        self.LOGGING_TRACE = False if self.ENV == 'prod' else True
-        self.BLACKLIST_AMT = 5000 if self.ENV == 'prod' else 0
-        self.BLOCKS_PER_EPOCH = int(os.getenv('BLOCKS_PER_EPOCH', 100))
-        self.WAIT_NEXT_BLOCK_TIME = int(os.getenv('WAIT_NEXT_BLOCK_TIME', 1))
-        self.NO_SET_WEIGHTS = os.getenv('NO_SET_WEIGHTS', False)
-        self.NO_SERVE = os.getenv('NO_SERVE', False)
+        self.BT_SUBTENSOR_NETWORK = "test" if self.ENV == "test" else "finney"
+        self.WANDB_OFF = False if self.ENV == "prod" else True
+        self.LOGGING_TRACE = False
+        self.BLACKLIST_AMT = 2000
+        self.BLOCKS_PER_EPOCH = int(os.getenv("BLOCKS_PER_EPOCH", 100))
+        self.WAIT_NEXT_BLOCK_TIME = int(os.getenv("WAIT_NEXT_BLOCK_TIME", 1))
+        self.NO_SET_WEIGHTS = os.getenv("NO_SET_WEIGHTS", False)
+        self.NO_SERVE = os.getenv("NO_SERVE", False)
 
     def __repr__(self):
         return (
             f"Config(BT_SUBTENSOR_NETWORK={self.BT_SUBTENSOR_NETWORK}, WALLET_NAME={self.WALLET_NAME}, HOT_KEY={self.HOT_KEY}"
-            f", NET_UID={self.NET_UID}, WANDB_OFF={self.WANDB_OFF}, LOGGING_TRACE={self.LOGGING_TRACE}")
+            f", NET_UID={self.NET_UID}, WANDB_OFF={self.WANDB_OFF}, LOGGING_TRACE={self.LOGGING_TRACE}"
+        )
 
 
 def get_config() -> (bt.config, Config):
@@ -55,33 +57,37 @@ def get_config() -> (bt.config, Config):
 
     # remove_argument(parser, "--axon.port")
     parser.add_argument(
-        "--axon.port", type=int, default=default_config.AXON_PORT, help="Port to run the axon on."
+        "--axon.port",
+        type=int,
+        default=default_config.AXON_PORT,
+        help="Port to run the axon on.",
     )
 
     # remove_argument(parser, "--axon.external_ip")
     parser.add_argument(
-        "--axon.external_ip", type=str, default=bt.utils.networking.get_external_ip(), help="IP for the metagraph"
+        "--axon.external_ip",
+        type=str,
+        default=bt.utils.networking.get_external_ip(),
+        help="IP for the metagraph",
     )
 
     # remove_argument(parser, "--subtensor.network")
     parser.add_argument(
         "--subtensor.network",
         default=default_config.BT_SUBTENSOR_NETWORK,
-        help="Bittensor network to connect to."
+        help="Bittensor network to connect to.",
     )
 
     # remove_argument(parser, "--wallet.name")
     parser.add_argument(
         "--wallet.name",
         default=default_config.WALLET_NAME,
-        help="Bittensor Wallet Name to use."
+        help="Bittensor Wallet Name to use.",
     )
 
     # remove_argument(parser, "--wallet.hotkey")
     parser.add_argument(
-        "--wallet.hotkey",
-        default=default_config.HOT_KEY,
-        help="Wallet Hotkey"
+        "--wallet.hotkey", default=default_config.HOT_KEY, help="Wallet Hotkey"
     )
 
     # Chain endpoint to connect to
@@ -92,7 +98,12 @@ def get_config() -> (bt.config, Config):
     )
 
     # Adds override arguments for network and netuid.
-    parser.add_argument("--netuid", type=int, default=default_config.NET_UID, help="The chain subnet uid.")
+    parser.add_argument(
+        "--netuid",
+        type=int,
+        default=default_config.NET_UID,
+        help="The chain subnet uid.",
+    )
 
     parser.add_argument(
         "--miner.root",
@@ -166,8 +177,10 @@ def get_config() -> (bt.config, Config):
     bt_config = bt.config.merge_all(bt.configs)
 
     # Logging captures events for diagnosis or understanding miner's behavior.
-    full_path = Path(f"{bt_config.logging.logging_dir}/{bt_config.wallet.name}/{bt_config.wallet.hotkey}"
-                     f"/netuid{bt_config.netuid}/miner").expanduser()
+    full_path = Path(
+        f"{bt_config.logging.logging_dir}/{bt_config.wallet.name}/{bt_config.wallet.hotkey}"
+        f"/netuid{bt_config.netuid}/miner"
+    ).expanduser()
     bt_config.full_path = str(full_path)
     # Ensure the directory for logging exists, else create one.
     full_path.mkdir(parents=True, exist_ok=True)
