@@ -15,7 +15,7 @@ class BaseService(metaclass=ServiceRegistryMeta):
 
     def __init__(self, metagraph, blacklist_amt):
         self.metagraph = metagraph
-        self.blacklist_amt = blacklist_amt if config.ENV == 'prod' else config.BLACKLIST_AMT
+        self.blacklist_amt = 1000
 
     def get_instance_of_provider(self, provider_name):
         provider_obj: Provider = ProviderRegistryMeta.get_class(provider_name)
@@ -56,27 +56,6 @@ class BaseService(metaclass=ServiceRegistryMeta):
             if stake < self.blacklist_amt:
                 return True, f"Blacklisted a low stake {synapse_type} request: {stake} < {self.blacklist_amt} from {hotkey}"
 
-            time_window = cortext.MIN_REQUEST_PERIOD * 60
-            current_time = time.time()
-
-            if hotkey not in BaseService.request_timestamps:
-                BaseService.request_timestamps[hotkey] = deque()
-
-            # Remove timestamps outside the current time window
-            while (BaseService.request_timestamps[hotkey] and
-                   current_time - BaseService.request_timestamps[hotkey][0] > time_window):
-                BaseService.request_timestamps[hotkey].popleft()
-
-            # Check if the number of requests exceeds the limit
-            if len(BaseService.request_timestamps[hotkey]) >= cortext.MAX_REQUESTS:
-                return (
-                    True,
-                    f"Request frequency for {hotkey} exceeded: "
-                    f"{len(BaseService.request_timestamps[hotkey])} requests in {cortext.MIN_REQUEST_PERIOD} minutes. "
-                    f"Limit is {cortext.MAX_REQUESTS} requests."
-                )
-
-            BaseService.request_timestamps[hotkey].append(current_time)
 
             return False, f"accepting {synapse_type} request from {hotkey}"
 
