@@ -9,11 +9,13 @@ from miner.config import config
 from cortext.protocol import StreamPrompting
 from miner.error_handler import error_handler
 
+
 class OpenAI(Provider):
     def __init__(self, synapse):
         super().__init__(synapse)
-        self.openai_client = AsyncOpenAI(timeout=config.ASYNC_TIME_OUT, api_key=config.OPENAI_API_KEY)
-
+        self.openai_client = AsyncOpenAI(
+            timeout=config.ASYNC_TIME_OUT, api_key=config.OPENAI_API_KEY
+        )
 
     @error_handler
     async def _prompt(self, synapse: StreamPrompting, send: Send):
@@ -44,8 +46,10 @@ class OpenAI(Provider):
             )
         try:
             response = await self.openai_client.chat.completions.create(
-                model=self.model, messages=[filtered_message],
-                temperature=self.temperature, stream=True,
+                model=self.model,
+                messages=[filtered_message],
+                temperature=self.temperature,
+                stream=True,
                 seed=self.seed,
                 max_tokens=self.max_tokens,
             )
@@ -66,7 +70,7 @@ class OpenAI(Provider):
                         "more_body": True,
                     }
                 )
-                bt.logging.info(f"Streamed tokens: {joined_buffer}")
+                #            bt.logging.info(f"Streamed tokens: {joined_buffer}")
                 buffer = []
 
         if buffer:
@@ -78,11 +82,11 @@ class OpenAI(Provider):
                     "more_body": False,
                 }
             )
-            bt.logging.info(f"Streamed tokens: {joined_buffer}")
+        #        bt.logging.info(f"Streamed tokens: {joined_buffer}")
         await send(
             {
                 "type": "http.response.body",
-                "body": b'',
+                "body": b"",
                 "more_body": False,
             }
         )
@@ -94,7 +98,7 @@ class OpenAI(Provider):
             prompt=self.messages,
             size=self.size,
             quality=self.quality,
-            style=self.style
+            style=self.style,
         )
         image_url = meta.data[0].url
         image_revised_prompt = meta.data[0].revised_prompt
@@ -112,14 +116,16 @@ class OpenAI(Provider):
         return synapse
 
     async def get_embeddings_in_batch(self, texts, model, batch_size=10):
-        batches = [texts[i:i + batch_size] for i in range(0, len(texts), batch_size)]
+        batches = [texts[i : i + batch_size] for i in range(0, len(texts), batch_size)]
         tasks = []
         for batch in batches:
             filtered_batch = [text for text in batch if text.strip()]
             if filtered_batch:
-                task = asyncio.create_task(self.openai_client.embeddings.create(
-                    input=filtered_batch, model=model, encoding_format='float'
-                ))
+                task = asyncio.create_task(
+                    self.openai_client.embeddings.create(
+                        input=filtered_batch, model=model, encoding_format="float"
+                    )
+                )
                 tasks.append(task)
             else:
                 bt.logging.info("Skipped an empty batch.")

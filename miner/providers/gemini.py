@@ -24,7 +24,7 @@ class Gemini(Provider):
                     temperature=self.temperature,
                     top_p=self.top_p,
                     top_k=self.top_k,
-                )
+                ),
             )
         except Exception as err:
             bt.logging.exception(err)
@@ -37,10 +37,10 @@ class Gemini(Provider):
                     "more_body": True,
                 }
             )
-            bt.logging.info(f"Streamed text: {chunk.text}")
+        # bt.logging.info(f"Streamed text: {chunk.text}")
 
         # Send final message to close the stream
-        await send({"type": "http.response.body", "body": b'', "more_body": False})
+        await send({"type": "http.response.body", "body": b"", "more_body": False})
 
     def image_service(self, synapse):
         pass

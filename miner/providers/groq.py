@@ -10,7 +10,9 @@ from cortext.protocol import StreamPrompting
 class Groq(Provider):
     def __init__(self, synapse):
         super().__init__(synapse)
-        self.groq_client = AsyncGroq(timeout=config.ASYNC_TIME_OUT, api_key=config.GROQ_API_KEY)
+        self.groq_client = AsyncGroq(
+            timeout=config.ASYNC_TIME_OUT, api_key=config.GROQ_API_KEY
+        )
 
     async def _prompt(self, synapse: StreamPrompting, send: Send):
         stream_kwargs = {
@@ -41,12 +43,12 @@ class Groq(Provider):
                         "more_body": True,
                     }
                 )
-                bt.logging.info(f"Streamed tokens: {joined_buffer}")
+                #         bt.logging.info(f"Streamed tokens: {joined_buffer}")
                 buffer = []
         await send(
             {
                 "type": "http.response.body",
-                "body": b'',
+                "body": b"",
                 "more_body": False,
             }
         )
