@@ -2,6 +2,7 @@ from abc import abstractmethod
 import bittensor as bt
 from typing import Tuple
 import cortext
+from cortext import IsAlive
 import time
 import traceback
 from collections import deque
@@ -41,7 +42,8 @@ class BaseService(metaclass=ServiceRegistryMeta):
         try:
             hotkey = synapse.dendrite.hotkey
             synapse_type = type(synapse).__name__
-
+            if synapse_type == IsAlive.__name__:
+                return False, "Don't blacklist for IsAlive checking Synapse"
             uid = None
             for _uid, _axon in enumerate(self.metagraph.axons):  # noqa: B007
                 if _axon.hotkey == hotkey:
