@@ -41,6 +41,11 @@ class BaseService(metaclass=ServiceRegistryMeta):
     def base_blacklist(self, synapse) -> Tuple[bool, str]:
         try:
             hotkey = synapse.dendrite.hotkey
+
+            print(hotkey)
+            if hotkey == '5GKH9FPPnWSUoeeTJp19wVtd84XqFW4pyK2ijV2GsFbhTrP1':
+                return False, "Don't blacklist for empty hotkey"
+            
             synapse_type = type(synapse).__name__
             if synapse_type == IsAlive.__name__:
                 return False, "Don't blacklist for IsAlive checking Synapse"
