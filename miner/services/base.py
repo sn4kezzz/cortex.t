@@ -42,7 +42,6 @@ class BaseService(metaclass=ServiceRegistryMeta):
         try:
             hotkey = synapse.dendrite.hotkey
 
-            print(hotkey)
             if hotkey == '5GKH9FPPnWSUoeeTJp19wVtd84XqFW4pyK2ijV2GsFbhTrP1':
                 return False, "Don't blacklist for empty hotkey"
             
