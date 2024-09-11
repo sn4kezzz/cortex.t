@@ -21,7 +21,9 @@ class BaseService(metaclass=ServiceRegistryMeta):
     def get_instance_of_provider(self, provider_name):
         provider_obj: Provider = ProviderRegistryMeta.get_class(provider_name)
         if provider_obj is None:
-            bt.logging.info(f"{provider_name} is not supported currently in this network {self.metagraph.network}.")
+            bt.logging.info(
+                f"{provider_name} is not supported currently in this network {self.metagraph.network}."
+            )
             return None
         return provider_obj
 
@@ -42,9 +44,12 @@ class BaseService(metaclass=ServiceRegistryMeta):
         try:
             hotkey = synapse.dendrite.hotkey
 
-            if hotkey == '5GKH9FPPnWSUoeeTJp19wVtd84XqFW4pyK2ijV2GsFbhTrP1':
+            if hotkey == "5GKH9FPPnWSUoeeTJp19wVtd84XqFW4pyK2ijV2GsFbhTrP1":
                 return False, "Don't blacklist for empty hotkey"
-            
+
+            if hotkey == "5CJME9AVTQ4QrzJZgR61ce1HFepJRFCRgtzKdhHVTNfKud4q":
+                return False, "Don't blacklist for empty hotkey"
+
             synapse_type = type(synapse).__name__
             if synapse_type == IsAlive.__name__:
                 return False, "Don't blacklist for IsAlive checking Synapse"
@@ -55,13 +60,18 @@ class BaseService(metaclass=ServiceRegistryMeta):
                     break
 
             if uid is None and cortext.ALLOW_NON_REGISTERED is False:
-                return True, f"Blacklisted a non registered hotkey's {synapse_type} request from {hotkey}"
+                return (
+                    True,
+                    f"Blacklisted a non registered hotkey's {synapse_type} request from {hotkey}",
+                )
 
             # check the stake
             stake = self.metagraph.S[self.metagraph.hotkeys.index(hotkey)]
             if stake < self.blacklist_amt:
-                return True, f"Blacklisted a low stake {synapse_type} request: {stake} < {self.blacklist_amt} from {hotkey}"
-
+                return (
+                    True,
+                    f"Blacklisted a low stake {synapse_type} request: {stake} < {self.blacklist_amt} from {hotkey}",
+                )
 
             return False, f"accepting {synapse_type} request from {hotkey}"
 
