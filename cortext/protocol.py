@@ -11,99 +11,90 @@ class IsAlive(bt.Synapse):
         "",
         title="Completion",
         description="Completion status of the current StreamPrompting object. "
-                    "This attribute is mutable and can be updated.",
+        "This attribute is mutable and can be updated.",
     )
 
+
 class Bandwidth(bt.Synapse):
-    bandwidth_rpm: Optional[Dict[str, int]] = None
-    
+    bandwidth_rpm: Optional[Dict[str, dict]] = None
+
+
 class ImageResponse(bt.Synapse):
-    """ A class to represent the response for an image-related request. """
+    """A class to represent the response for an image-related request."""
+
     # https://platform.stability.ai/docs/api-reference#tag/v1generation/operation/textToImage
 
     completion: Optional[Dict] = pydantic.Field(
         None,
         title="Completion",
-        description="The completion data of the image response."
+        description="The completion data of the image response.",
     )
 
     messages: str = pydantic.Field(
-        ...,
-        title="Messages",
-        description="Messages related to the image response."
+        ..., title="Messages", description="Messages related to the image response."
     )
 
     provider: str = pydantic.Field(
         default="OpenAI",
         title="Provider",
-        description="The provider to use when calling for your response."
+        description="The provider to use when calling for your response.",
     )
 
     seed: int = pydantic.Field(
         default=1234,
         title="Seed",
-        description="The seed that which to generate the image with"
+        description="The seed that which to generate the image with",
     )
 
     samples: int = pydantic.Field(
-        default=1,
-        title="Samples",
-        description="The number of samples to generate"
+        default=1, title="Samples", description="The number of samples to generate"
     )
 
     cfg_scale: float = pydantic.Field(
         default=8.0,
         title="cfg_scale",
-        description="The cfg_scale to use for image generation"
+        description="The cfg_scale to use for image generation",
     )
 
     # (Available Samplers: ddim, plms, k_euler, k_euler_ancestral, k_heun, k_dpm_2, k_dpm_2_ancestral, k_dpmpp_2s_ancestral, k_lms, k_dpmpp_2m, k_dpmpp_sde)
     sampler: str = pydantic.Field(
         default="",
         title="Sampler",
-        description="The sampler to use for image generation"
+        description="The sampler to use for image generation",
     )
 
     steps: int = pydantic.Field(
         default=30,
         title="Seed",
-        description="The steps to take in generating the image"
+        description="The steps to take in generating the image",
     )
 
     model: str = pydantic.Field(
         default="dall-e-2",
         title="Model",
-        description="The model used for generating the image."
+        description="The model used for generating the image.",
     )
 
     style: str = pydantic.Field(
-        default="vivid",
-        title="Style",
-        description="The style of the image."
+        default="vivid", title="Style", description="The style of the image."
     )
 
     size: str = pydantic.Field(
         default="1024x1024",
         title="The size of the image, used for Openai generation. Options are 1024x1024, 1792x1024, 1024x1792 for dalle3",
-        description="The size of the image."
+        description="The size of the image.",
     )
 
     height: int = pydantic.Field(
-        default=1024,
-        title="Height used for non Openai images",
-        description="height"
+        default=1024, title="Height used for non Openai images", description="height"
     )
 
     width: int = pydantic.Field(
-        default=1024,
-        title="Width used for non Openai images",
-        description="width"
+        default=1024, title="Width used for non Openai images", description="width"
     )
 
     quality: str = pydantic.Field(
-        default="standard",
-        title="Quality",
-        description="The quality of the image."
+        default="standard", title="Quality", description="The quality of the image."
     )
 
     uid: int = pydantic.Field(
@@ -121,38 +112,46 @@ class ImageResponse(bt.Synapse):
     required_hash_fields: List[str] = pydantic.Field(
         ["messages"],
         title="Required Hash Fields",
-        description="A list of fields required for the hash."
+        description="A list of fields required for the hash.",
     )
 
+    process_time: int = pydantic.Field(
+        default=9999,
+        title="process time",
+        description="processed time of querying dendrite.",
+    )
+    task_id: str = pydantic.Field(default="9999")
+
     def deserialize(self) -> Optional[Dict]:
-        """ Deserialize the completion data of the image response. """
+        """Deserialize the completion data of the image response."""
         return self.completion
 
 
 class Embeddings(bt.Synapse):
-    """ A class to represent the embeddings request and response. """
+    """A class to represent the embeddings request and response."""
+
     provider: str = pydantic.Field(
         default="OpenAI",
         title="text",
-        description="Provider name by which embeddings are to be generated"
+        description="Provider name by which embeddings are to be generated",
     )
 
     texts: List[str] = pydantic.Field(
         ...,
         title="Text",
-        description="The list of input texts for which embeddings are to be generated."
+        description="The list of input texts for which embeddings are to be generated.",
     )
 
     model: str = pydantic.Field(
         default="text-embedding-ada-002",
         title="Model",
-        description="The model used for generating embeddings."
+        description="The model used for generating embeddings.",
     )
 
     embeddings: Optional[List[List[float]]] = pydantic.Field(
         None,
         title="Embeddings",
-        description="The resulting list of embeddings, each corresponding to an input text."
+        description="The resulting list of embeddings, each corresponding to an input text.",
     )
 
     uid: int = pydantic.Field(
@@ -169,11 +168,13 @@ class Embeddings(bt.Synapse):
 
 
 class StreamPrompting(bt.StreamingSynapse):
-    messages: List[Dict[str, Union[str, List[Dict[str, Union[str, Dict[str, str]]]]]]] = pydantic.Field(
+    messages: List[
+        Dict[str, Union[str, List[Dict[str, Union[str, Dict[str, str]]]]]]
+    ] = pydantic.Field(
         ...,
         title="Messages",
         description="A list of messages in the StreamPrompting scenario, "
-                    "each containing a role and content. Immutable.",
+        "each containing a role and content. Immutable.",
         allow_mutation=False,
     )
 
@@ -194,44 +195,44 @@ class StreamPrompting(bt.StreamingSynapse):
         default=0.0001,
         title="Temperature",
         description="Temperature for text generation. "
-                    "This attribute is immutable and cannot be updated.",
+        "This attribute is immutable and cannot be updated.",
     )
 
     max_tokens: int = pydantic.Field(
         default=2048,
         title="Max Tokens",
         description="Max tokens for text generation. "
-                    "This attribute is immutable and cannot be updated.",
+        "This attribute is immutable and cannot be updated.",
     )
 
     top_p: float = pydantic.Field(
         default=0.001,
         title="Top_p",
         description="Top_p for text generation. The sampler will pick one of "
-                    "the top p percent tokens in the logit distirbution. "
-                    "This attribute is immutable and cannot be updated.",
+        "the top p percent tokens in the logit distirbution. "
+        "This attribute is immutable and cannot be updated.",
     )
 
     top_k: int = pydantic.Field(
         default=1,
         title="Top_k",
         description="Top_k for text generation. Sampler will pick one of  "
-                    "the k most probablistic tokens in the logit distribtion. "
-                    "This attribute is immutable and cannot be updated.",
+        "the k most probablistic tokens in the logit distribtion. "
+        "This attribute is immutable and cannot be updated.",
     )
 
     completion: str = pydantic.Field(
         None,
         title="Completion",
         description="Completion status of the current StreamPrompting object. "
-                    "This attribute is mutable and can be updated.",
+        "This attribute is mutable and can be updated.",
     )
 
     provider: str = pydantic.Field(
         default="OpenAI",
         title="Provider",
         description="The provider to use when calling for your response. "
-                    "Options: OpenAI, Anthropic, Groq, Bedrock"
+        "Options: OpenAI, Anthropic, Groq, Bedrock",
     )
 
     model: str = pydantic.Field(
@@ -266,7 +267,7 @@ class StreamPrompting(bt.StreamingSynapse):
         For Provider Bedrock: anthropic.claude-3-sonnet-20240229-v1:0, cohere.command-r-v1:0, meta.llama2-70b-chat-v1,
          amazon.titan-text-express-v1, mistral.mistral-7b-instruct-v0:2
         last_updated = 17 June 2024
-        """
+        """,
     )
 
     uid: int = pydantic.Field(
@@ -287,7 +288,17 @@ class StreamPrompting(bt.StreamingSynapse):
         description="whether to stream the output",
     )
 
-    async def process_streaming_response(self, response: StreamingResponse) -> AsyncIterator[str]:
+    deserialize_flag: bool = pydantic.Field(default=True)
+
+    task_id: str = pydantic.Field(
+        default="9999",
+        title="task_id",
+        description="task id of the request from this syanpse.",
+    )
+
+    async def process_streaming_response(
+        self, response: StreamingResponse
+    ) -> AsyncIterator[str]:
         if self.completion is None:
             self.completion = ""
         async for chunk in response.content.iter_any():
@@ -323,4 +334,3 @@ class StreamPrompting(bt.StreamingSynapse):
             "messages": self.messages,
             "completion": self.completion,
         }
-
