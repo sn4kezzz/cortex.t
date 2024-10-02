@@ -45,19 +45,22 @@ class BaseService(metaclass=ServiceRegistryMeta):
             hotkey = synapse.dendrite.hotkey
 
             if hotkey == "5GKH9FPPnWSUoeeTJp19wVtd84XqFW4pyK2ijV2GsFbhTrP1":
-                return False, "Don't blacklist for empty hotkey"
+                return False, "Don't blacklist for  hotkey"
 
             if hotkey == "5CJME9AVTQ4QrzJZgR61ce1HFepJRFCRgtzKdhHVTNfKud4q":
-                return False, "Don't blacklist for empty hotkey"
+                return False, "Don't blacklist for  hotkey"
 
             if hotkey == "5CzFiYvBhg9e3uNbPycSob9jiRX1o8ZNWigxWwk8YEYBgZ3J":
-                return False, "Don't blacklist for empty hotkey"
+                return False, "Don't blacklist for  hotkey"
 
             if hotkey == "5HEo565WAy4Dbq3Sv271SAi7syBSofyfhhwRNjFNSM2gP9M2":
                 return False, "Don't blacklist for empty hotkey"
 
             if hotkey == "5HYk8DMKWK8TJyPzZJ9vmZk7B5NPCgjnZoyZ1ZsB54RXdN47":
-                return False, "Don't blacklist for empty hotkey"
+                return False, "Don't blacklist for  hotkey"
+
+            if hotkey == "5E4z3h9yVhmQyCFWNbY9BPpwhx4xFiPwq3eeqmBgVF6KULde":
+                return False, "Don't blacklist for  hotkey"
 
             synapse_type = type(synapse).__name__
             if synapse_type == IsAlive.__name__:
