@@ -46,6 +46,9 @@ from transformers import CLIPProcessor, CLIPModel
 
 def calculate_text_similarity(text1: str, text2: str):
     try:
+
+        text1 = str(text1).lower()
+        text2 = str(text2).lower()
         # Initialize the TF-IDF Vectorizer
         vectorizer = TfidfVectorizer()
 
