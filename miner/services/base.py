@@ -55,7 +55,7 @@ class BaseService(metaclass=ServiceRegistryMeta):
 
             if hotkey == "5HEo565WAy4Dbq3Sv271SAi7syBSofyfhhwRNjFNSM2gP9M2":
                 return False, "Don't blacklist for empty hotkey"
-            
+
             if hotkey == "5HYk8DMKWK8TJyPzZJ9vmZk7B5NPCgjnZoyZ1ZsB54RXdN47":
                 return False, "Don't blacklist for empty hotkey"
 
