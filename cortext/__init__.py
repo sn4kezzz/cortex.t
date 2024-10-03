@@ -38,6 +38,11 @@ from openai import AsyncOpenAI
 
 from cortext.protocol import StreamPrompting, Embeddings, ImageResponse, IsAlive
 
+from substrateinterface import Keypair
+from bittensor.errors import (
+    SynapseDendriteNoneException,
+)
+
 load_dotenv()
 try:
     AsyncOpenAI.api_key = os.environ["OPENAI_API_KEY"]
@@ -54,6 +59,49 @@ EMBEDDING_BLACKLIST_STAKE = 5000
 ISALIVE_BLACKLIST_STAKE = min(
     PROMPT_BLACKLIST_STAKE, IMAGE_BLACKLIST_STAKE, EMBEDDING_BLACKLIST_STAKE
 )
+
+
+# axon change
+
+from bittensor import axon
+
+
+# Step 1: Define your custom default_verify method
+def custom_default_verify(self, synapse):
+    # Custom code, removing the part you commented out
+    if synapse.dendrite is not None:
+        keypair = Keypair(ss58_address=synapse.dendrite.hotkey)
+
+        message = f"{synapse.dendrite.nonce}.{synapse.dendrite.hotkey}.{self.wallet.hotkey.ss58_address}.{synapse.dendrite.uuid}.{synapse.computed_body_hash}"
+
+        endpoint_key = f"{synapse.dendrite.hotkey}:{synapse.dendrite.uuid}"
+
+        # Commented out part regarding nonce checks
+        # This part is removed in your custom version:
+        """
+        if (
+            endpoint_key in self.nonces.keys()
+            and self.nonces[endpoint_key] is not None
+            and synapse.dendrite.nonce is not None
+            and synapse.dendrite.nonce <= self.nonces[endpoint_key]
+        ):
+            raise Exception("Nonce is too small")
+        """
+
+        if not keypair.verify(message, synapse.dendrite.signature):
+            raise Exception(
+                f"Signature mismatch with {message} and {synapse.dendrite.signature}"
+            )
+
+        # Update nonce
+        self.nonces[endpoint_key] = synapse.dendrite.nonce  # type: ignore
+    else:
+        raise SynapseDendriteNoneException()
+
+
+# Step 2: Monkey patch the axon class to replace default_verify with your custom version
+axon.default_verify = custom_default_verify
+
 # MIN_REQUEST_PERIOD = 0.33
 # MAX_REQUESTS = 20
 # must have the test_key whitelisted to avoid a global blacklist
