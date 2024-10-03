@@ -67,7 +67,7 @@ bandwidth_to_model = {
     # },
     #
     "Anthropic": {
-        "claude-3-5-sonnet-20240620": 15,
+        "claude-3-5-sonnet-20240620": 30,
         # "claude-3-opus-20240229": 1,
         # "claude-3-haiku-20240307": 1,
     },
@@ -77,7 +77,7 @@ bandwidth_to_model = {
     "Groq": {
         # "gemma2-9b-it": 1,
         # "llama-3.1-8b-instant": 1,
-        "llama-3.1-70b-versatile": 15,
+        "llama-3.1-70b-versatile": 20,
         # "llama-3.1-405b-reasoning": 16,
         # "mixtral-8x7b-32768": 1,
     },
