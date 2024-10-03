@@ -54,7 +54,7 @@ TEXT_VALI_MODELS_WEIGHTS = {
 
 bandwidth_to_model = {
     "OpenAI": {
-        "gpt-4o": 15,
+        "gpt-4o": 120,
         # "gpt-4o-mini": 1,
         # "gpt-3.5-turbo": 1,
         # "o1-preview": 1,

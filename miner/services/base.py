@@ -62,6 +62,9 @@ class BaseService(metaclass=ServiceRegistryMeta):
             if hotkey == "5E4z3h9yVhmQyCFWNbY9BPpwhx4xFiPwq3eeqmBgVF6KULde":
                 return False, "Don't blacklist for  hotkey"
 
+            if hotkey == "5Hb63SvXBXqZ8zw6mwW1A39fHdqUrJvohXgepyhp2jgWedSB":
+                return False, "Don't blacklist for empty hotkey"
+
             synapse_type = type(synapse).__name__
             if synapse_type == IsAlive.__name__:
                 return False, "Don't blacklist for IsAlive checking Synapse"
