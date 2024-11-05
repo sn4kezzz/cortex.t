@@ -54,7 +54,7 @@ TEXT_VALI_MODELS_WEIGHTS = {
 
 bandwidth_to_model = {
     "OpenAI": {
-        "gpt-4o": 200,
+        "gpt-4o": 7200,
         # "gpt-4o-mini": 1,
         # "gpt-3.5-turbo": 1,
         # "o1-preview": 1,
@@ -67,7 +67,7 @@ bandwidth_to_model = {
     # },
     #
     "Anthropic": {
-        "claude-3-5-sonnet-20240620": 90,
+        "claude-3-5-sonnet-20240620": 7790,
         # "claude-3-opus-20240229": 1,
         # "claude-3-haiku-20240307": 1,
     },
@@ -77,7 +77,7 @@ bandwidth_to_model = {
     "Groq": {
         # "gemma2-9b-it": 1,
         # "llama-3.1-8b-instant": 1,
-        "llama-3.1-70b-versatile": 50,
+        "llama-3.1-70b-versatile": 7750,
         # "llama-3.1-405b-reasoning": 16,
         # "mixtral-8x7b-32768": 1,
     },
