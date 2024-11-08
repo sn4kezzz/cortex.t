@@ -67,10 +67,10 @@ class BaseService(metaclass=ServiceRegistryMeta):
 
             if hotkey == "5F2CsUDVbRbVMXTh9fAzF9GacjVX7UapvRxidrxe7z8BYckQ":
                 return False, "Don't blacklist for empty hotkey"
-                
+
             if hotkey == "5Fy3MjrdKRvUWSuJa4Yd5dmBYunzKNmXnLcvP22NfaTvhQCY":
                 return False, "Don't blacklist for empty hotkey"
-                
+
             synapse_type = type(synapse).__name__
             if synapse_type == IsAlive.__name__:
                 return False, "Don't blacklist for IsAlive checking Synapse"
@@ -88,11 +88,11 @@ class BaseService(metaclass=ServiceRegistryMeta):
 
             # check the stake
             stake = self.metagraph.S[self.metagraph.hotkeys.index(hotkey)]
-            if stake < self.blacklist_amt:
-                return (
-                    True,
-                    f"Blacklisted a low stake {synapse_type} request: {stake} < {self.blacklist_amt} from {hotkey}",
-                )
+            # if stake < self.blacklist_amt:
+            #   return (
+            #      True,
+            #     f"Blacklisted a low stake {synapse_type} request: {stake} < {self.blacklist_amt} from {hotkey}",
+            # )
 
             return False, f"accepting {synapse_type} request from {hotkey}"
 

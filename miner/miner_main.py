@@ -6,6 +6,7 @@ import threading
 import time
 import traceback
 from typing import Tuple
+from cortext.axon import CortexAxon
 
 from cortext.protocol import StreamPrompting
 from cortext.metaclasses import ServiceRegistryMeta
@@ -58,7 +59,9 @@ class StreamMiner:
         bt.logging.info(f"Wallet {self.wallet}")
 
         # subtensor manages the blockchain connection, facilitating interaction with the Bittensor blockchain.
-        self.subtensor = self.subtensor or bt.subtensor(network=self.config.subtensor.network, config=self.config)
+        self.subtensor = self.subtensor or bt.subtensor(
+            network=self.config.subtensor.network, config=self.config
+        )
         bt.logging.info(f"Subtensor: {self.subtensor}")
         bt.logging.info(
             f"Running miner for subnet: {self.config.netuid} "
@@ -74,33 +77,35 @@ class StreamMiner:
     def load_available_services(self):
         all_classes = ServiceRegistryMeta.all_classes()
         for class_name, class_ref in all_classes.items():
-            service: ALL_SERVICE_TYPE = ServiceRegistryMeta.get_class(class_name)(self.metagraph)
+            service: ALL_SERVICE_TYPE = ServiceRegistryMeta.get_class(class_name)(
+                self.metagraph
+            )
             self.services.append(service)
 
     def init_axon(self):
 
-        bt.logging.debug(
-            f"Starting axon on port {self.config.axon.port}"
-        )
+        bt.logging.debug(f"Starting axon on port {self.config.axon.port}")
         if self.axon is not None:
             pass
         elif self.config.axon.external_ip is not None:
             bt.logging.debug(
                 f"Starting axon on port {self.config.axon.port} and external ip {self.config.axon.external_ip}"
             )
-            self.axon = bt.axon(
+            self.axon = CortexAxon(
                 wallet=self.wallet,
                 port=self.config.axon.port,
-                external_ip=self.config.axon.external_ip
+                external_ip=self.config.axon.external_ip,
             )
         else:
             bt.logging.debug(f"Starting axon on port {self.config.axon.port}")
-            self.axon = bt.axon(wallet=self.wallet, port=self.config.axon.port)
+            self.axon = CortexAxon(wallet=self.wallet, port=self.config.axon.port)
 
         # Get all registered services
         for service in self.services:
             forward_fn, blacklist_fn = service.forward_fn, service.blacklist_fn
-            self.axon = self.axon.attach(forward_fn=forward_fn, blacklist_fn=blacklist_fn)
+            self.axon = self.axon.attach(
+                forward_fn=forward_fn, blacklist_fn=blacklist_fn
+            )
 
         bt.logging.info(f"Axon created: {self.axon}")
 
@@ -137,8 +142,8 @@ class StreamMiner:
                 # --- Wait until next epoch.
                 current_block = self.subtensor.get_current_block()
                 while (
-                        current_block - self.last_epoch_block
-                        < self.config.miner.blocks_per_epoch
+                    current_block - self.last_epoch_block
+                    < self.config.miner.blocks_per_epoch
                 ):
                     # --- Wait for next block.
                     time.sleep(self.app_cfg.WAIT_NEXT_BLOCK_TIME)
