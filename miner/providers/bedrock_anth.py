@@ -76,18 +76,18 @@ class Anthropic(Provider):
         # bt.logging.info(request_body)
 
         if self.model == "claude-3-5-sonnet-20240620":
-            model_id = "anthropic.claude-3-5-sonnet-20240620-v1:0"
+            model_id = "us.anthropic.claude-3-5-sonnet-20240620-v1:0"
         elif self.model == "claude-3-haiku-20240307":
-            model_id = "anthropic.claude-3-haiku-20240307-v1:0"
+            model_id = "us.anthropic.claude-3-haiku-20240307-v1:0"
         elif self.model == "claude-3-opus-20240229":
-            model_id = "anthropic.claude-3-5-sonnet-20240620-v1:0"
+            model_id = "us.anthropic.claude-3-5-sonnet-20240620-v1:0"
         else:
-            model_id = "anthropic.claude-3-5-sonnet-20240620-v1:0"
+            model_id = "us.anthropic.claude-3-5-sonnet-20240620-v1:0"
 
         bt.logging.info(f"using {model_id}")
         async with self.aws_session.client(
             service_name="bedrock-runtime",
-            #region_name="eu-central-1",
+            # region_name="eu-central-1",
             region_name="us-east-1",
             aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
             aws_secret_access_key=os.getenv("AWS_SECRET_KEY"),
@@ -114,7 +114,7 @@ class Anthropic(Provider):
                                 "more_body": True,
                             }
                         )
-                        bt.logging.info(f"Streamed tokens: {token}")
+                        # bt.logging.info(f"Streamed tokens: {token}")
 
         await send({"type": "http.response.body", "body": b"", "more_body": False})
 
